@@ -1,32 +1,25 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\aawws\\OneDrive\\Masaüstü\\MyRepos\\FamilyTree-Web\\FamilyTreeApp\\FamilyTreeApp.csproj": {}
+    "C:\\Users\\can\\Desktop\\Projects\\Web\\FamilyTree-Web\\FamilyTreeApp\\FamilyTreeApp.csproj": {}
   },
   "projects": {
-    "C:\\Users\\aawws\\OneDrive\\Masaüstü\\MyRepos\\FamilyTree-Web\\FamilyTreeApp\\FamilyTreeApp.csproj": {
+    "C:\\Users\\can\\Desktop\\Projects\\Web\\FamilyTree-Web\\FamilyTreeApp\\FamilyTreeApp.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\aawws\\OneDrive\\Masaüstü\\MyRepos\\FamilyTree-Web\\FamilyTreeApp\\FamilyTreeApp.csproj",
+        "projectUniqueName": "C:\\Users\\can\\Desktop\\Projects\\Web\\FamilyTree-Web\\FamilyTreeApp\\FamilyTreeApp.csproj",
         "projectName": "FamilyTreeApp",
-        "projectPath": "C:\\Users\\aawws\\OneDrive\\Masaüstü\\MyRepos\\FamilyTree-Web\\FamilyTreeApp\\FamilyTreeApp.csproj",
-        "packagesPath": "C:\\Users\\aawws\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\aawws\\OneDrive\\Masaüstü\\MyRepos\\FamilyTree-Web\\FamilyTreeApp\\obj\\",
+        "projectPath": "C:\\Users\\can\\Desktop\\Projects\\Web\\FamilyTree-Web\\FamilyTreeApp\\FamilyTreeApp.csproj",
+        "packagesPath": "C:\\Users\\can\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\can\\Desktop\\Projects\\Web\\FamilyTree-Web\\FamilyTreeApp\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\aawws\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "C:\\Users\\can\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net9.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -69,7 +62,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.302/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.303/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

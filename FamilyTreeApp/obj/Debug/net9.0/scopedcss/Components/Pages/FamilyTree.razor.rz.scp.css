@@ -1,0 +1,75 @@
+/* <ul> */
+.tree-children[b-5gjn933f37] {
+    padding-top: 20px;
+    position: relative;
+    display: table;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.tree-children[b-5gjn933f37]::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    border-left: 1px solid #ccc;
+    height: 20px;
+}
+
+/* <li> */
+.tree-node[b-5gjn933f37] {
+    position: relative;
+    display: table-cell;
+    vertical-align: top;
+    padding: 20px 5px 0 5px;
+}
+
+.tree-node[b-5gjn933f37]::before, .tree-node[b-5gjn933f37]::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    border-top: 1px solid #ccc;
+    width: 50%;
+    height: 20px;
+}
+
+.tree-node[b-5gjn933f37]::before {
+    right: 50%;
+    border-right: 1px solid #ccc;
+}
+
+.tree-node[b-5gjn933f37]::after {
+    left: 50%;
+    border-left: 1px solid #ccc;
+}
+
+.tree-node:only-child[b-5gjn933f37]::before,
+.tree-node:only-child[b-5gjn933f37]::after {
+    content: none;
+}
+
+.tree-node:first-child[b-5gjn933f37]::before {
+    content: none;
+}
+
+.tree-node:last-child[b-5gjn933f37]::after {
+    content: none;
+}
+
+/* <a> */
+.tree-label[b-5gjn933f37] {
+    border: 1px solid #ccc;
+    padding: 5px 10px;
+    text-decoration: none;
+    color: #333;
+    display: inline-block;
+    border-radius: 4px;
+    background: #f9f9f9;
+    font-weight: bold;
+}
+
+.tree-label:hover[b-5gjn933f37] {
+    background: #e3e3e3;
+    color: #000;
+}
+

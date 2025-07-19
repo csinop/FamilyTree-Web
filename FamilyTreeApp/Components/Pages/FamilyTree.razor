@@ -9,37 +9,56 @@
 }
 else
 {
-    <div class="tree">
-        <ul>
-            <li>@_familyTreeMarkUp</li>
-        </ul>
+    <div>
+        <ul class= "tree-children">
+            @InOrder(_rootNode)
+        </ul>        
     </div>
 }
 
 @code {
-    private void InOrder(FamilyTreeNode node) 
+    private RenderFragment InOrder(FamilyTreeNode node) => builder =>
     {        
         if (node == null) return;
         
-        int childrenCount = 0;
-        if (node.Children != null) childrenCount = node.Children.Count;
+        int markupElementCount = 0;
 
-        for(int i = 0; i < childrenCount; i++) 
+        builder.OpenElement(markupElementCount++, "li");
+        builder.AddAttribute(markupElementCount++, "class", "tree-node");
+        builder.AddAttribute(markupElementCount++, _markupContext, "");
+
+        builder.OpenElement(markupElementCount++, "a");
+        builder.AddAttribute(markupElementCount++, "href", "#");
+        builder.AddAttribute(markupElementCount++, "class", "tree-label");
+        builder.AddAttribute(markupElementCount++, _markupContext, "");
+
+        builder.AddContent(markupElementCount++, node.FullName);
+        builder.CloseElement(); // </a>
+        
+        if (node.Children != null && node.Children.Any())
         {
-            if (node.Children == null) continue;
-            InOrder(node.Children[i]);
-        }
+            int childrenCount = node.Children.Count;
+            
+            builder.OpenElement(markupElementCount++, "ul");
+            builder.AddAttribute(markupElementCount++, "class", "tree-children");
+            builder.AddAttribute(markupElementCount++, _markupContext, "");
 
-        Console.WriteLine(node.FullName);
-        _familyTreeMarkUp += @<a href="#">@node.FullName</a>;
-    }
+            for(int i = 0; i < childrenCount; i++) 
+            {               
+                if (node.Children == null) continue;
+                builder.AddContent(markupElementCount++, InOrder(node.Children[i]));
+            }
+
+            builder.CloseElement(); // </ul>
+        } 
+
+        builder.CloseElement(); // </li>
+    };
 }
 
 @code {    
     private FamilyTreeNode? _rootNode;
-    private RenderFragment? _familyTreeMarkUp;
-
-    //private RenderFragment[] _markupArray = [@<ul>];
+    private string _markupContext = "b-5gjn933f37";
         
     protected override async Task OnInitializedAsync()
     {
@@ -64,7 +83,12 @@ else
         _rootNode.Children.Add(child3);
         _rootNode.Children.Add(child4);
 
-        InOrder(_rootNode);
+        FamilyTreeNode grandChild1 = new FamilyTreeNode("Can SİNOP", "Grand Son 1", false);
+        FamilyTreeNode grandChild2 = new FamilyTreeNode("Esin SİNOP", "Grand Daughter 1", false);
+
+        child1.Children = new List<FamilyTreeNode>();
+        child1.Children.Add(grandChild1);
+        child1.Children.Add(grandChild2);
     } 
 
     private class FamilyTreeNode {

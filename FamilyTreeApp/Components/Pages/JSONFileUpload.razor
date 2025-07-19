@@ -1,0 +1,35 @@
+﻿@page "/jsonFileUpload"
+@rendermode InteractiveServer
+
+<PageTitle>Upload File</PageTitle>
+
+<h1>Upload your JSON document:</h1>
+
+<InputFile OnChange="HandleFileSelected" accept=".json" />
+@if (!string.IsNullOrEmpty(_fileContent))
+{
+    <p><strong>File content:</strong></p>
+    <pre>@_fileContent</pre>
+}
+
+@code {
+    private string? _fileContent;
+    private int _maxAllowedFileSize = 10 * 1024 * 1024;
+
+    private async Task HandleFileSelected(InputFileChangeEventArgs e)
+    {
+        IBrowserFile file = e.File;
+
+        if (file == null || !file.Name.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
+        {
+            _fileContent = "Invalid file type. Please upload a .json file.";
+            return;
+        }
+
+        using Stream stream = file.OpenReadStream(maxAllowedSize: _maxAllowedFileSize); // 10 MB
+        using StreamReader reader = new StreamReader(stream);
+        _fileContent = await reader.ReadToEndAsync();
+        
+        // var json = JsonSerializer.Deserialize<YourModel>(FileContent);
+    }
+}

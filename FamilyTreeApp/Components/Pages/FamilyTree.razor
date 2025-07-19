@@ -1,0 +1,95 @@
+@page "/familyTree"
+@rendermode InteractiveServer
+
+<PageTitle>FamilyTree</PageTitle>
+
+@if (_rootNode == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="tree">
+        <ul>
+            <li>@_familyTreeMarkUp</li>
+        </ul>
+    </div>
+}
+
+@code {
+    private void InOrder(FamilyTreeNode node) 
+    {        
+        if (node == null) return;
+        
+        int childrenCount = 0;
+        if (node.Children != null) childrenCount = node.Children.Count;
+
+        for(int i = 0; i < childrenCount; i++) 
+        {
+            if (node.Children == null) continue;
+            InOrder(node.Children[i]);
+        }
+
+        Console.WriteLine(node.FullName);
+        _familyTreeMarkUp += @<a href="#">@node.FullName</a>;
+    }
+}
+
+@code {    
+    private FamilyTreeNode? _rootNode;
+    private RenderFragment? _familyTreeMarkUp;
+
+    //private RenderFragment[] _markupArray = [@<ul>];
+        
+    protected override async Task OnInitializedAsync()
+    {
+        // Simulate asynchronous loading to demonstrate streaming rendering
+        await Task.Delay(1000);
+
+        InitializeTreeData();
+    }
+
+    private void InitializeTreeData()
+    {
+        _rootNode = new FamilyTreeNode("İsmet ERTAŞ", "Grandfather", true);
+
+        FamilyTreeNode child1 = new FamilyTreeNode("Elif Belkıs ERTAŞ", "Daughter 1", false);
+        FamilyTreeNode child2 = new FamilyTreeNode("Deniz ERTAŞ", "Daughter 2", false);
+        FamilyTreeNode child3 = new FamilyTreeNode("Yıldız ERTAŞ", "Daughter 3", false);
+        FamilyTreeNode child4 = new FamilyTreeNode("Merih Nihan ERTAŞ", "Daughter 4", false);
+
+        _rootNode.Children = new List<FamilyTreeNode>();
+        _rootNode.Children.Add(child1);
+        _rootNode.Children.Add(child2);
+        _rootNode.Children.Add(child3);
+        _rootNode.Children.Add(child4);
+
+        InOrder(_rootNode);
+    } 
+
+    private class FamilyTreeNode {
+
+        public string FullName;
+        public string Title;
+        public List<FamilyTreeNode>? Children;
+        private FamilyTreeNode? _parent;
+
+        private bool _isRoot = false;
+
+        public FamilyTreeNode(string fullName, string title, bool isRoot) {
+            Title = title;
+            FullName = fullName;
+            _isRoot = isRoot;
+        }
+
+        public void SetParent(FamilyTreeNode ParentNode)
+        {
+            _parent = ParentNode;
+        }
+
+        public bool GetIsRoot()
+        {
+            return _isRoot;
+        }
+    }
+}

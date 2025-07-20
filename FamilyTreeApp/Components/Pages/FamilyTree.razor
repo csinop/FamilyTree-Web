@@ -1,24 +1,39 @@
+
+@inject TreeDataService TreeData;
+@implements IDisposable
+
 @page "/familyTree"
 @rendermode InteractiveServer
 
+<JSONFileUpload />
 <PageTitle>FamilyTree</PageTitle>
 
-@if (_rootNode == null)
+@if (TreeData.RootNode == null)
 {
-    <p><em>Loading...</em></p>
+    <p>No tree data loaded. Please upload a valid JSON file. @TreeData.GetHashCode()</p>
 }
 else
 {
     <div>
         <ul class= "tree-children">
-            @InOrder(_rootNode)
+            @InOrder(TreeData.RootNode)
         </ul>        
     </div>
 }
 
 @code {
+    protected override void OnInitialized()
+    {
+        TreeData.OnChange += StateHasChanged;
+    }
+    public void Dispose()
+    {
+        TreeData.OnChange -= StateHasChanged;
+    }
     private RenderFragment InOrder(FamilyTreeNode node) => builder =>
     {        
+        Console.WriteLine("Building the tree...");
+
         if (node == null) return;
         
         int markupElementCount = 0;
@@ -57,7 +72,6 @@ else
 }
 
 @code {    
-    private FamilyTreeNode? _rootNode;
     private string _markupContext = "b-5gjn933f37";
         
     protected override async Task OnInitializedAsync()
@@ -70,7 +84,9 @@ else
 
     private void InitializeTreeData()
     {
-        _rootNode = new FamilyTreeNode("İsmet ERTAŞ", "Grandfather", true);
+        //_rootNode = TreeData.RootNode;
+
+        /*_rootNode = new FamilyTreeNode("İsmet ERTAŞ", "Grandfather", true);
 
         FamilyTreeNode child1 = new FamilyTreeNode("Elif Belkıs ERTAŞ", "Daughter 1", false);
         FamilyTreeNode child2 = new FamilyTreeNode("Deniz ERTAŞ", "Daughter 2", false);
@@ -88,32 +104,6 @@ else
 
         child1.Children = new List<FamilyTreeNode>();
         child1.Children.Add(grandChild1);
-        child1.Children.Add(grandChild2);
-    } 
-
-    private class FamilyTreeNode {
-
-        public string FullName;
-        public string Title;
-        public List<FamilyTreeNode>? Children;
-        private FamilyTreeNode? _parent;
-
-        private bool _isRoot = false;
-
-        public FamilyTreeNode(string fullName, string title, bool isRoot) {
-            Title = title;
-            FullName = fullName;
-            _isRoot = isRoot;
-        }
-
-        public void SetParent(FamilyTreeNode ParentNode)
-        {
-            _parent = ParentNode;
-        }
-
-        public bool GetIsRoot()
-        {
-            return _isRoot;
-        }
+        child1.Children.Add(grandChild2);*/
     }
 }

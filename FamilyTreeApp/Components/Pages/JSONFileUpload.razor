@@ -1,11 +1,13 @@
-﻿@page "/jsonFileUpload"
-@rendermode InteractiveServer
+﻿@inject TreeDataService TreeData
 
-<PageTitle>Upload File</PageTitle>
+@page "/jsonFileUpload"
+@using System.Text.Json
+@rendermode InteractiveServer
 
 <h1>Upload your JSON document:</h1>
 
 <InputFile OnChange="HandleFileSelected" accept=".json" />
+
 @if (!string.IsNullOrEmpty(_fileContent))
 {
     <p><strong>File content:</strong></p>
@@ -30,6 +32,32 @@
         using StreamReader reader = new StreamReader(stream);
         _fileContent = await reader.ReadToEndAsync();
         
-        // var json = JsonSerializer.Deserialize<YourModel>(FileContent);
+        TreeData.UploadedJson = _fileContent;
+        
+        try
+        {
+            FamilyTreeNode? rootNode = JsonSerializer.Deserialize<FamilyTreeNode>(
+                _fileContent,
+                new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                }
+            );
+
+            if (rootNode != null) 
+            {
+                TreeData.SetRootNode(rootNode);
+                Console.WriteLine("Read the json file.");
+                Console.WriteLine(TreeData.GetHashCode());
+                return;
+            }
+
+            Console.WriteLine("RootNode could not be instanciated.");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"JSON deserialization failed: {ex.Message}");
+            TreeData.RootNode = null;
+        }        
     }
 }

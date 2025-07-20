@@ -279,3 +279,41 @@ main[b-sooym5xyd5] {
     color: #000;
 }
 
+/* _content/FamilyTreeApp/Components/Pages/Home.razor.rz.scp.css */
+main[b-pxn85y6mpk] {
+    padding: 2rem;
+    background: #f5f5f5;
+    min-height: 100vh;
+}
+
+section[b-pxn85y6mpk] {
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+/* _content/FamilyTreeApp/Components/Pages/JSONFileUpload.razor.rz.scp.css */
+.toggle-btn[b-yy5izkdli9] {
+    padding: 0.5rem 1rem;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.input-container[b-yy5izkdli9] {
+    height: 300px;
+}
+
+.input-container textarea[b-yy5izkdli9] {
+    width: 100%;
+    height: 100%;
+    padding: 0.5rem;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    resize: none;
+    box-sizing: border-box;
+}

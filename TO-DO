@@ -1,0 +1,3 @@
+- Make the JSON file content display collapsable.
+- Make the JSON file content display editable.
+- Add css to JSONFileUpload.razor

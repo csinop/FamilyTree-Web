@@ -10,13 +10,34 @@
 
 @if (!string.IsNullOrEmpty(_fileContent))
 {
-    <p><strong>File content:</strong></p>
-    <pre>@_fileContent</pre>
+    <br><p><strong>File content:</strong></p><br>
+    <div>        
+        @if(_showInput) 
+        {
+            <div class="input-container" id="inputContainer">
+                <textarea>@_fileContent</textarea>
+            </div><br>
+        }
+        <button class="toggle-btn" @onclick="HandleToggleButtonClick">Show</button>
+    </div>
 }
 
 @code {
     private string? _fileContent;
+    private bool _showInput = true;
+
     private int _maxAllowedFileSize = 10 * 1024 * 1024;
+
+    private void HandleToggleButtonClick() 
+    {
+        _showInput = !_showInput;
+        Console.WriteLine("Click");
+    }
+
+    private void AutoGrow()
+    {
+
+    }
 
     private async Task HandleFileSelected(InputFileChangeEventArgs e)
     {

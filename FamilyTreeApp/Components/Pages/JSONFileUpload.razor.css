@@ -21,3 +21,30 @@
     resize: none;
     box-sizing: border-box;
 }
+
+.horizontal-container {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;    
+    overflow-x: auto;    
+    padding: 1rem;
+    background: #f0f0f0;
+    border-radius: 8px;
+}
+
+.download-button {
+    display: inline-block;
+    background-color: #28a745;
+    color: white;
+    font-weight: bold;
+    padding: 10px 16px;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+    font-family: sans-serif;
+}
+
+.download-button:hover {
+    background-color: #218838;
+    text-decoration: none;
+}

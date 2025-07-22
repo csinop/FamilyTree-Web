@@ -9,7 +9,7 @@
 
 @if (TreeData.RootNode == null)
 {
-    <p>No tree data loaded. Please upload a valid JSON file. @TreeData.GetHashCode()</p>
+    <p>No tree data loaded. Please upload a valid JSON file.</p>
 }
 else
 {
@@ -25,6 +25,7 @@ else
     {
         TreeData.OnChange += StateHasChanged;
     }
+
     public void Dispose()
     {
         TreeData.OnChange -= StateHasChanged;

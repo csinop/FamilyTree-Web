@@ -279,6 +279,16 @@ main[b-sooym5xyd5] {
     color: #000;
 }
 
+.horizontal-container[b-5gjn933f37] {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;    
+    overflow-x: auto;    
+    padding: 1rem;
+    background: #f0f0f0;
+    border-radius: 8px;
+}
+
 /* _content/FamilyTreeApp/Components/Pages/Home.razor.rz.scp.css */
 main[b-pxn85y6mpk] {
     padding: 2rem;
@@ -316,4 +326,31 @@ section[b-pxn85y6mpk] {
     border-radius: 4px;
     resize: none;
     box-sizing: border-box;
+}
+
+.horizontal-container[b-yy5izkdli9] {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;    
+    overflow-x: auto;    
+    padding: 1rem;
+    background: #f0f0f0;
+    border-radius: 8px;
+}
+
+.download-button[b-yy5izkdli9] {
+    display: inline-block;
+    background-color: #28a745;
+    color: white;
+    font-weight: bold;
+    padding: 10px 16px;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+    font-family: sans-serif;
+}
+
+.download-button:hover[b-yy5izkdli9] {
+    background-color: #218838;
+    text-decoration: none;
 }

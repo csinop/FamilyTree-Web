@@ -73,3 +73,13 @@
     color: #000;
 }
 
+.horizontal-container {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;    
+    overflow-x: auto;    
+    padding: 1rem;
+    background: #f0f0f0;
+    border-radius: 8px;
+}
+

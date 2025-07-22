@@ -1,3 +1,6 @@
-- Make the JSON file content display collapsable.
-- Make the JSON file content display editable.
-- Add css to JSONFileUpload.razor
+- Make the JSON file content display collapsable. --> done
+- Make the JSON file content display editable. --> done
+- Make the changes to the JSON content apply to the family tree. --> done
+- Make the changes on web site downloadable as a .json document. --> done
+- Add css to JSONFileUpload.razor --> ongoing
+- IsRoot can be removed from the FamilyTreeNode class.

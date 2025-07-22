@@ -2,6 +2,7 @@
 
 @page "/jsonFileUpload"
 @using System.Text.Json
+@using System.Text
 @rendermode InteractiveServer
 
 <h1>Upload your JSON document:</h1>
@@ -10,22 +11,34 @@
 
 @if (!string.IsNullOrEmpty(_fileContent))
 {
-    <br><p><strong>File content:</strong></p><br>
+    <br><p><strong>File content:</strong></p>
+   
     <div>        
         @if(_showInput) 
         {
             <div class="input-container" id="inputContainer">
-                <textarea>@_fileContent</textarea>
+                <textarea @bind="_fileContent" style="font-family: monospace;">@_fileContent</textarea>
             </div><br>
         }
-        <button class="toggle-btn" @onclick="HandleToggleButtonClick">Show</button>
+        <div class="horizontal-container">
+            <button class="toggle-btn" @onclick="HandleToggleButtonClick">Show</button>
+            <button class="toggle-btn" @onclick="UpdateFamilyTree">💾 Save</button>
+            @if (!string.IsNullOrEmpty(_downloadUrl))
+            {
+                <a href="@_downloadUrl"
+                    download="FamilyTree_Modified.json"
+                    class="download-button">
+                    📥 Download
+                </a>
+            }
+        </div>
     </div>
 }
 
 @code {
     private string? _fileContent;
+    private string? _downloadUrl;
     private bool _showInput = true;
-
     private int _maxAllowedFileSize = 10 * 1024 * 1024;
 
     private void HandleToggleButtonClick() 
@@ -34,9 +47,46 @@
         Console.WriteLine("Click");
     }
 
-    private void AutoGrow()
+    private void UpdateFamilyTree()
     {
+        if (string.IsNullOrEmpty(_fileContent)) return;
 
+        SaveJSONDocument();
+
+        try
+        {
+            FamilyTreeNode? rootNode = JsonSerializer.Deserialize<FamilyTreeNode>(
+                _fileContent,
+                new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true,
+                    WriteIndented = true
+                }
+            );
+
+            if (rootNode != null) 
+            {
+                TreeData.SetRootNode(rootNode);
+                Console.WriteLine("Changes have been saved.");
+                return;
+            }
+
+            Console.WriteLine("RootNode could not be updated.");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"JSON deserialization failed: {ex.Message}");
+            TreeData.RootNode = null;
+        } 
+    }
+
+    private void SaveJSONDocument()
+    {
+        if (string.IsNullOrEmpty(_fileContent)) return;
+
+        byte[] bytes = Encoding.UTF8.GetBytes(_fileContent);
+        string base64 = Convert.ToBase64String(bytes);
+        _downloadUrl = $"data:application/json;base64,{base64}";
     }
 
     private async Task HandleFileSelected(InputFileChangeEventArgs e)
@@ -58,10 +108,11 @@
         try
         {
             FamilyTreeNode? rootNode = JsonSerializer.Deserialize<FamilyTreeNode>(
-                _fileContent,
+                TreeData.UploadedJson,
                 new JsonSerializerOptions
                 {
-                    PropertyNameCaseInsensitive = true
+                    PropertyNameCaseInsensitive = true,
+                    WriteIndented = true
                 }
             );
 
@@ -69,7 +120,6 @@
             {
                 TreeData.SetRootNode(rootNode);
                 Console.WriteLine("Read the json file.");
-                Console.WriteLine(TreeData.GetHashCode());
                 return;
             }
 

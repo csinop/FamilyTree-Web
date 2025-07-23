@@ -17,15 +17,51 @@
 else
 {
     <div class="horizontal-container">
-        <button class="toggle-btn" @onclick="ResetFamilyTree">Reset Tree</button>
-        <button class="toggle-btn" @onclick="Undo">Undo</button>
-        <button class="toggle-btn" @onclick="Redo">Redo</button>
+        <button class="toggle-btn" @onclick="ResetFamilyTree">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                viewBox="0 0 24 24">
+                <path d="M2 12a10 10 0 1 1 3.17 7.32" />
+                <polyline points="2 12 2 6 8 6" />
+            </svg>
+        </button>
+        <button class="toggle-btn" @onclick="Undo">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path d="M3 7v6h6M3 13c1.5-5.5 12-5.5 15-1a9 9 0 0 1 3 5" />
+            </svg>
+        </button>
+        <button class="toggle-btn" @onclick="Redo">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path d="M21 7v6h-6M21 13c-1.5-5.5-12-5.5-15-1a9 9 0 0 0-3 5" />
+            </svg>
+        </button>
     </div>
     <div id="tree-container">
         <ul class= "tree-children">
             @InOrder(TreeData.RootNode)
         </ul>        
     </div>
+    @if (_newNodePopUpVisible)
+    {
+        <div class="new-node-popup-overlay">
+            <div class="new-node-popup">
+                <h3>Add a New Family Member</h3>
+
+                <label>Full Name:</label><br />
+                <input type="text" @bind="_newFullName" /><br />
+
+                <label>Title:</label><br />
+                <input type="text" @bind="_newTitle" /><br /><br />
+                
+                @if (!_canAddNode)
+                {
+                    <p style="color: red; font-size: 0.9rem;">Both Full Name and Title are required.</p>
+                }
+                <button class="btn btn-primary" @onclick="AddNode" disabled="@(!_canAddNode)">Add</button>
+                <button class="btn btn-secondary" @onclick="@(() => _newNodePopUpVisible = false)">Cancel</button>
+            </div>
+        </div>
+    }
 }
 
 @code {
@@ -84,7 +120,7 @@ else
             builder.AddAttribute(markupElementCount++, _markupContext, "");
 
             builder.OpenElement(markupElementCount++, "button");
-            builder.AddAttribute(markupElementCount++, "onclick", EventCallback.Factory.Create(this, () => AddNode("a", node)));
+            builder.AddAttribute(markupElementCount++, "onclick", EventCallback.Factory.Create(this, () => ShowNewNodePopUp(node)));
             builder.AddAttribute(markupElementCount++, "href", "#");
             builder.AddAttribute(markupElementCount++, "class", "plus-button");
             builder.AddAttribute(markupElementCount++, _markupContext, "");
@@ -99,32 +135,62 @@ else
     };
 }
 
-@code {  
-    private string _markupContext = "b-5gjn933f37";
+@code {
+    private bool _canAddNode => 
+        !string.IsNullOrWhiteSpace(_newFullName) && 
+        !string.IsNullOrWhiteSpace(_newTitle) && 
+        _targetParentForAdd != null;
+
+    private bool _newNodePopUpVisible = false;
+
+    private string _markupContext = "b-5gjn933f37"; 
+    private string? _newFullName;
+    private string? _newTitle;
+
+    private FamilyTreeNode? _targetParentForAdd;
     private Stack<TreeAction> _undoActions = new();
     private Stack<TreeAction> _redoActions = new();
-
-    private void AddNode(string content, FamilyTreeNode parentNode)
+    
+    private void ShowNewNodePopUp(FamilyTreeNode parentNode)
     {
-        if (parentNode.Children == null) parentNode.Children = new();
+        _targetParentForAdd = parentNode;
+        _newFullName = "";
+        _newTitle = "";
+        _newNodePopUpVisible = true;
+    }
+
+    private void HideNewNodePopUp()
+    {
+        _targetParentForAdd = null;
+        _newFullName = "";
+        _newTitle = "";
+        _newNodePopUpVisible = false;
+    }
+
+    private void AddNode()
+    {
+        if (!_canAddNode) return;
+
+        if (_targetParentForAdd.Children == null) _targetParentForAdd.Children = new();
 
         FamilyTreeNode newNode = new FamilyTreeNode(
-            content,
-            "test",
+            _newFullName,
+            _newTitle,
             false
         );
 
-        parentNode.Children.Add(newNode);
+        _targetParentForAdd.Children.Add(newNode);
         _undoActions.Push(new TreeAction
             {
                 Type = TreeAction.ActionType.Add,
                 AffectedNode = newNode,
-                ParentNode = parentNode,
-                OriginalIndex = parentNode.Children.Count - 1
+                ParentNode = _targetParentForAdd,
+                OriginalIndex = _targetParentForAdd.Children.Count - 1
             }
         );
 
         _redoActions.Clear();
+        HideNewNodePopUp();
     }
 
     private void RemoveNode(FamilyTreeNode parentNode, FamilyTreeNode node)

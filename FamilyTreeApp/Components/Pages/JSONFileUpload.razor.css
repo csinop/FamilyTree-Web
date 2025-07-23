@@ -1,12 +1,3 @@
-.toggle-btn {
-    padding: 0.5rem 1rem;
-    background: #007bff;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
 .input-container {
     height: 300px;
 }

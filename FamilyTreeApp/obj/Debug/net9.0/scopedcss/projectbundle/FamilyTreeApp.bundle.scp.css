@@ -208,26 +208,14 @@ main[b-sooym5xyd5] {
 .tree-children[b-5gjn933f37] {
     padding-top: 20px;
     position: relative;
-    display: table;
-    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+}
+
+.tree-children[b-5gjn933f37], .tree-node[b-5gjn933f37] {
+    margin: 0;
+    padding: 0;
     text-align: center;
-}
-
-.tree-children[b-5gjn933f37]::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 50%;
-    border-left: 1px solid #ccc;
-    height: 20px;
-}
-
-/* <li> */
-.tree-node[b-5gjn933f37] {
-    position: relative;
-    display: table-cell;
-    vertical-align: top;
-    padding: 20px 5px 0 5px;
 }
 
 .tree-node[b-5gjn933f37]::before, .tree-node[b-5gjn933f37]::after {
@@ -239,8 +227,17 @@ main[b-sooym5xyd5] {
     height: 20px;
 }
 
+/* <li> */
+.tree-node[b-5gjn933f37] {
+    position: relative;
+    display: table-cell;
+    vertical-align: top;
+    padding: 20px 5px 0 5px;
+    text-align: center;
+}
+
 .tree-node[b-5gjn933f37]::before {
-    right: 50%;
+    right: calc(50% - 1px);
     border-right: 1px solid #ccc;
 }
 
@@ -249,17 +246,14 @@ main[b-sooym5xyd5] {
     border-left: 1px solid #ccc;
 }
 
-.tree-node:only-child[b-5gjn933f37]::before,
-.tree-node:only-child[b-5gjn933f37]::after {
-    content: none;
-}
-
 .tree-node:first-child[b-5gjn933f37]::before {
-    content: none;
+    /*content: none;*/
+    border-top: none;
 }
 
 .tree-node:last-child[b-5gjn933f37]::after {
-    content: none;
+    /*content: none;*/
+    border-top: none;
 }
 
 /* <a> */
@@ -279,16 +273,29 @@ main[b-sooym5xyd5] {
     color: #000;
 }
 
-.horizontal-container[b-5gjn933f37] {
-    display: flex;
-    flex-direction: row;
-    gap: 1rem;    
-    overflow-x: auto;    
-    padding: 1rem;
-    background: #f0f0f0;
-    border-radius: 8px;
+.plus-button[b-5gjn933f37] {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    background-color: #e0e0e0;
+    color: #333;
+    border: none;
+    border-radius: 10px;
+    font-size: 24px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
+.plus-button:hover[b-5gjn933f37] {
+    background-color: #c0c0c0;
+    transform: scale(1.05);
+}
+
+.plus-button:active[b-5gjn933f37] {
+    transform: scale(0.95);
+}
 /* _content/FamilyTreeApp/Components/Pages/Home.razor.rz.scp.css */
 main[b-pxn85y6mpk] {
     padding: 2rem;
@@ -304,15 +311,6 @@ section[b-pxn85y6mpk] {
     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
 /* _content/FamilyTreeApp/Components/Pages/JSONFileUpload.razor.rz.scp.css */
-.toggle-btn[b-yy5izkdli9] {
-    padding: 0.5rem 1rem;
-    background: #007bff;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
 .input-container[b-yy5izkdli9] {
     height: 300px;
 }

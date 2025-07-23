@@ -22,7 +22,10 @@
         }
         <div class="horizontal-container">
             <button class="toggle-btn" @onclick="HandleToggleButtonClick">Show</button>
-            <button class="toggle-btn" @onclick="UpdateFamilyTree">💾 Save</button>
+            @if(_showInput) 
+            {           
+                <button class="toggle-btn" @onclick="UpdateFamilyTree">💾 Save</button>
+            }
             @if (!string.IsNullOrEmpty(_downloadUrl))
             {
                 <a href="@_downloadUrl"
@@ -44,7 +47,6 @@
     private void HandleToggleButtonClick() 
     {
         _showInput = !_showInput;
-        Console.WriteLine("Click");
     }
 
     private void UpdateFamilyTree()
@@ -123,7 +125,7 @@
                 return;
             }
 
-            Console.WriteLine("RootNode could not be instanciated.");
+            Console.WriteLine("Root node could not be instanciated.");
         }
         catch (Exception ex)
         {

@@ -1,8 +1,11 @@
 
 @inject TreeDataService TreeData;
+@inject IJSRuntime JS
 @implements IDisposable
 
 @page "/familyTree"
+@using Microsoft.AspNetCore.Components.Rendering
+@using System.Text.Json
 @rendermode InteractiveServer
 
 <PageTitle>FamilyTree</PageTitle>
@@ -13,7 +16,12 @@
 }
 else
 {
-    <div>
+    <div class="horizontal-container">
+        <button class="toggle-btn" @onclick="ResetFamilyTree">Reset Tree</button>
+        <button class="toggle-btn" @onclick="Undo">Undo</button>
+        <button class="toggle-btn" @onclick="Redo">Redo</button>
+    </div>
+    <div id="tree-container">
         <ul class= "tree-children">
             @InOrder(TreeData.RootNode)
         </ul>        
@@ -30,10 +38,9 @@ else
     {
         TreeData.OnChange -= StateHasChanged;
     }
-    private RenderFragment InOrder(FamilyTreeNode node) => builder =>
-    {        
-        Console.WriteLine("Building the tree...");
 
+    private RenderFragment InOrder(FamilyTreeNode node) => builder =>
+    {       
         if (node == null) return;
         
         int markupElementCount = 0;
@@ -66,44 +73,128 @@ else
 
             builder.CloseElement(); // </ul>
         } 
+        else 
+        {
+            builder.OpenElement(markupElementCount++, "ul");
+            builder.AddAttribute(markupElementCount++, "class", "tree-children");
+            builder.AddAttribute(markupElementCount++, _markupContext, "");
+
+            builder.OpenElement(markupElementCount++, "li");
+            builder.AddAttribute(markupElementCount++, "class", "tree-node");
+            builder.AddAttribute(markupElementCount++, _markupContext, "");
+
+            builder.OpenElement(markupElementCount++, "button");
+            builder.AddAttribute(markupElementCount++, "onclick", EventCallback.Factory.Create(this, () => AddNode("a", node)));
+            builder.AddAttribute(markupElementCount++, "href", "#");
+            builder.AddAttribute(markupElementCount++, "class", "plus-button");
+            builder.AddAttribute(markupElementCount++, _markupContext, "");
+            builder.AddContent(markupElementCount++, "+");
+
+            builder.CloseElement(); // </a>
+            builder.CloseElement(); // </li>
+            builder.CloseElement(); // </ul>
+        }
 
         builder.CloseElement(); // </li>
     };
 }
 
-@code {    
+@code {  
     private string _markupContext = "b-5gjn933f37";
-        
-    protected override async Task OnInitializedAsync()
-    {
-        // Simulate asynchronous loading to demonstrate streaming rendering
-        await Task.Delay(1000);
+    private Stack<TreeAction> _undoActions = new();
+    private Stack<TreeAction> _redoActions = new();
 
-        InitializeTreeData();
+    private void AddNode(string content, FamilyTreeNode parentNode)
+    {
+        if (parentNode.Children == null) parentNode.Children = new();
+
+        FamilyTreeNode newNode = new FamilyTreeNode(
+            content,
+            "test",
+            false
+        );
+
+        parentNode.Children.Add(newNode);
+        _undoActions.Push(new TreeAction
+            {
+                Type = TreeAction.ActionType.Add,
+                AffectedNode = newNode,
+                ParentNode = parentNode,
+                OriginalIndex = parentNode.Children.Count - 1
+            }
+        );
+
+        _redoActions.Clear();
     }
 
-    private void InitializeTreeData()
+    private void RemoveNode(FamilyTreeNode parentNode, FamilyTreeNode node)
     {
-        //_rootNode = TreeData.RootNode;
+        int index = parentNode.Children.IndexOf(node);
+        parentNode.Children.Remove(node);
 
-        /*_rootNode = new FamilyTreeNode("İsmet ERTAŞ", "Grandfather", true);
+        _undoActions.Push(new TreeAction
+            {
+                Type = TreeAction.ActionType.Remove,
+                AffectedNode = node,
+                ParentNode = parentNode,
+                OriginalIndex = index
+            }
+        );
 
-        FamilyTreeNode child1 = new FamilyTreeNode("Elif Belkıs ERTAŞ", "Daughter 1", false);
-        FamilyTreeNode child2 = new FamilyTreeNode("Deniz ERTAŞ", "Daughter 2", false);
-        FamilyTreeNode child3 = new FamilyTreeNode("Yıldız ERTAŞ", "Daughter 3", false);
-        FamilyTreeNode child4 = new FamilyTreeNode("Merih Nihan ERTAŞ", "Daughter 4", false);
+        _redoActions.Clear();
+    }
 
-        _rootNode.Children = new List<FamilyTreeNode>();
-        _rootNode.Children.Add(child1);
-        _rootNode.Children.Add(child2);
-        _rootNode.Children.Add(child3);
-        _rootNode.Children.Add(child4);
+    private void ResetFamilyTree()
+    {
+        FamilyTreeNode? rootNode = JsonSerializer.Deserialize<FamilyTreeNode>(
+            TreeData.UploadedJson,
+            new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true,
+                WriteIndented = true
+            }
+        );
 
-        FamilyTreeNode grandChild1 = new FamilyTreeNode("Can SİNOP", "Grand Son 1", false);
-        FamilyTreeNode grandChild2 = new FamilyTreeNode("Esin SİNOP", "Grand Daughter 1", false);
+        if (rootNode != null) 
+        {
+            TreeData.SetRootNode(rootNode);
+            Console.WriteLine("Read the json file.");
+        }
+    }
 
-        child1.Children = new List<FamilyTreeNode>();
-        child1.Children.Add(grandChild1);
-        child1.Children.Add(grandChild2);*/
+    private void Undo()
+    {
+        if (!_undoActions.Any()) return;
+
+        TreeAction treeAction = _undoActions.Pop();
+        _redoActions.Push(treeAction);
+
+        switch (treeAction.Type) 
+        {
+            case TreeAction.ActionType.Add:
+                treeAction.ParentNode.Children.Remove(treeAction.AffectedNode);
+                break;
+            case TreeAction.ActionType.Remove:
+                treeAction.ParentNode.Children.Insert(treeAction.OriginalIndex, treeAction.AffectedNode);
+                break;
+        }
+    }
+
+    private void Redo()
+    {
+        if (!_redoActions.Any()) return;
+
+        TreeAction treeAction = _redoActions.Pop();
+        _undoActions.Push(treeAction);
+
+        switch (treeAction.Type) 
+        {
+            case TreeAction.ActionType.Add:
+                treeAction.ParentNode.Children.Insert(treeAction.OriginalIndex, treeAction.AffectedNode);
+                break;
+            case TreeAction.ActionType.Remove:
+                treeAction.ParentNode.Children.Remove(treeAction.AffectedNode);
+                break;
+        }
     }
 }

@@ -21,10 +21,25 @@
             </div><br>
         }
         <div class="horizontal-container">
-            <button class="toggle-btn" @onclick="HandleToggleButtonClick">Show</button>
+            <button class="toggle-btn" @onclick="HandleToggleButtonClick">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    viewBox="0 0 24 24">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                    <circle cx="12" cy="12" r="3"/>
+                </svg>
+            </button>
             @if(_showInput) 
             {           
-                <button class="toggle-btn" @onclick="UpdateFamilyTree">💾 Save</button>
+                <button class="toggle-btn" @onclick="UpdateFamilyTree">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" 
+                        viewBox="0 0 24 24">
+                        <path d="M17 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V7z"/>
+                        <polyline points="17 3 17 8 7 8"/>
+                        <rect x="7" y="13" width="6" height="5"/>
+                    </svg>
+                </button>
             }
             @if (!string.IsNullOrEmpty(_downloadUrl))
             {
@@ -79,7 +94,7 @@
         {
             Console.WriteLine($"JSON deserialization failed: {ex.Message}");
             TreeData.RootNode = null;
-        } 
+        }
     }
 
     private void SaveJSONDocument()

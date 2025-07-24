@@ -3,5 +3,11 @@
 - Make the changes to the JSON content apply to the family tree. --> done
 - Make the changes on web site downloadable as a .json document. --> done
 - Add css to JSONFileUpload.razor --> ongoing
-- IsRoot can be removed from the FamilyTreeNode class.
-- Add Reset, Undo and Redo functionalities to the tree builder.
+- IsRoot can be removed from the FamilyTreeNode class. --> done
+- Add Reset, Undo and Redo functionalities to the tree builder. --> done
+
+- Adjust the FamilyTreeNode class to support spouses.
+- Make the render algorithm be able to render spouses.
+- Add the ability to insert a spouse.
+
+- Add support for multiple spouses.

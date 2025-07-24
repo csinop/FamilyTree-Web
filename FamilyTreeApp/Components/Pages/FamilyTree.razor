@@ -1,4 +1,3 @@
-
 @inject TreeDataService TreeData;
 @inject IJSRuntime JS
 @implements IDisposable
@@ -52,7 +51,7 @@ else
 
                 <label>Title:</label><br />
                 <input type="text" @bind="_newTitle" /><br /><br />
-                
+
                 @if (!_canAddNode)
                 {
                     <p style="color: red; font-size: 0.9rem;">Both Full Name and Title are required.</p>
@@ -65,74 +64,90 @@ else
 }
 
 @code {
-    protected override void OnInitialized()
-    {
-        TreeData.OnChange += StateHasChanged;
-    }
-
-    public void Dispose()
-    {
-        TreeData.OnChange -= StateHasChanged;
-    }
-
     private RenderFragment InOrder(FamilyTreeNode node) => builder =>
     {       
         if (node == null) return;
         
-        int markupElementCount = 0;
+        int sequence = 0;
 
-        builder.OpenElement(markupElementCount++, "li");
-        builder.AddAttribute(markupElementCount++, "class", "tree-node");
-        builder.AddAttribute(markupElementCount++, _markupContext, "");
+        builder.OpenElement(sequence++, "li");
+        builder.AddAttribute(sequence++, "class", "tree-node");
+        builder.AddAttribute(sequence++, _markupContext, "");
 
-        builder.OpenElement(markupElementCount++, "a");
-        builder.AddAttribute(markupElementCount++, "href", "#");
-        builder.AddAttribute(markupElementCount++, "class", "tree-label");
-        builder.AddAttribute(markupElementCount++, _markupContext, "");
+        builder.OpenElement(sequence++, "div");
+        builder.AddAttribute(sequence++, "class", "person-pair");
+        builder.AddAttribute(sequence++, _markupContext, "");
+        
+        if (node.Spouse != null)
+        {
+            builder.OpenElement(sequence++, "a");
+            builder.AddAttribute(sequence++, "class", "tree-label spouse");
+            builder.AddAttribute(sequence++, _markupContext, "");
+            builder.AddContent(sequence++, node.Spouse.FullName);
+            builder.CloseElement();
 
-        builder.AddContent(markupElementCount++, node.FullName);
+            builder.OpenElement(sequence++, "span");
+            builder.AddAttribute(sequence++, "class", "spouse-connector");
+            builder.AddAttribute(sequence++, _markupContext, "");
+            builder.CloseElement();
+        }
+
+        builder.OpenElement(sequence++, "a");
+        builder.AddAttribute(sequence++, "href", "#");
+        builder.AddAttribute(sequence++, "class", "tree-label");
+        builder.AddAttribute(sequence++, _markupContext, "");
+
+        builder.AddContent(sequence++, node.FullName);
         builder.CloseElement(); // </a>
+        builder.CloseElement(); // </div>
         
         if (node.Children != null && node.Children.Any())
         {
             int childrenCount = node.Children.Count;
             
-            builder.OpenElement(markupElementCount++, "ul");
-            builder.AddAttribute(markupElementCount++, "class", "tree-children");
-            builder.AddAttribute(markupElementCount++, _markupContext, "");
+            builder.OpenElement(sequence++, "ul");
+            builder.AddAttribute(sequence++, "class", "tree-children");
+            builder.AddAttribute(sequence++, _markupContext, "");
 
             for(int i = 0; i < childrenCount; i++) 
-            {               
+            {         
                 if (node.Children == null) continue;
-                builder.AddContent(markupElementCount++, InOrder(node.Children[i]));
+                builder.AddContent(sequence++, InOrder(node.Children[i]));
+                if (i == childrenCount - 1) RenderAddButton(builder, ref sequence, node);
             }
 
             builder.CloseElement(); // </ul>
-        } 
+        }
         else 
         {
-            builder.OpenElement(markupElementCount++, "ul");
-            builder.AddAttribute(markupElementCount++, "class", "tree-children");
-            builder.AddAttribute(markupElementCount++, _markupContext, "");
+            builder.OpenElement(sequence++, "ul");
+            builder.AddAttribute(sequence++, "class", "tree-children");
+            builder.AddAttribute(sequence++, _markupContext, "");
 
-            builder.OpenElement(markupElementCount++, "li");
-            builder.AddAttribute(markupElementCount++, "class", "tree-node");
-            builder.AddAttribute(markupElementCount++, _markupContext, "");
+            RenderAddButton(builder, ref sequence, node);
 
-            builder.OpenElement(markupElementCount++, "button");
-            builder.AddAttribute(markupElementCount++, "onclick", EventCallback.Factory.Create(this, () => ShowNewNodePopUp(node)));
-            builder.AddAttribute(markupElementCount++, "href", "#");
-            builder.AddAttribute(markupElementCount++, "class", "plus-button");
-            builder.AddAttribute(markupElementCount++, _markupContext, "");
-            builder.AddContent(markupElementCount++, "+");
-
-            builder.CloseElement(); // </a>
-            builder.CloseElement(); // </li>
             builder.CloseElement(); // </ul>
         }
 
         builder.CloseElement(); // </li>
     };
+
+    private void RenderAddButton(RenderTreeBuilder builder, ref int sequence, FamilyTreeNode parentNode)
+    {
+        builder.OpenElement(sequence++, "li");
+        builder.AddAttribute(sequence++, "class", "tree-node");
+        builder.AddAttribute(sequence++, _markupContext, "");
+
+        builder.OpenElement(sequence++, "button");
+        builder.AddAttribute(sequence++, "onclick", EventCallback.Factory.Create(this, () => ShowNewNodePopUp(parentNode)));
+        builder.AddAttribute(sequence++, "href", "#");
+        builder.AddAttribute(sequence++, "class", "plus-button");
+        builder.AddAttribute(sequence++, _markupContext, "");
+        builder.AddContent(sequence++, "+");
+
+        builder.CloseElement(); // </button>
+        builder.CloseElement(); // </li>
+    }
 }
 
 @code {
@@ -173,11 +188,13 @@ else
 
         if (_targetParentForAdd.Children == null) _targetParentForAdd.Children = new();
 
-        FamilyTreeNode newNode = new FamilyTreeNode(
-            _newFullName,
-            _newTitle,
-            false
-        );
+        FamilyTreeNode newNode = new FamilyTreeNode
+        {
+            FullName = _newFullName,
+            Title = _newTitle
+        };
+
+        // Determine Spouse / Children here
 
         _targetParentForAdd.Children.Add(newNode);
         _undoActions.Push(new TreeAction
@@ -195,6 +212,9 @@ else
 
     private void RemoveNode(FamilyTreeNode parentNode, FamilyTreeNode node)
     {
+        if (parentNode == null) return;
+        if (parentNode.Children == null) return;
+
         int index = parentNode.Children.IndexOf(node);
         parentNode.Children.Remove(node);
 
@@ -233,6 +253,11 @@ else
         if (!_undoActions.Any()) return;
 
         TreeAction treeAction = _undoActions.Pop();
+
+        if (treeAction == null) return;
+        if (treeAction.ParentNode == null) return;
+        if (treeAction.ParentNode.Children == null) return;
+
         _redoActions.Push(treeAction);
 
         switch (treeAction.Type) 
@@ -251,6 +276,11 @@ else
         if (!_redoActions.Any()) return;
 
         TreeAction treeAction = _redoActions.Pop();
+
+        if (treeAction == null) return;
+        if (treeAction.ParentNode == null) return;
+        if (treeAction.ParentNode.Children == null) return;
+
         _undoActions.Push(treeAction);
 
         switch (treeAction.Type) 
@@ -262,5 +292,15 @@ else
                 treeAction.ParentNode.Children.Remove(treeAction.AffectedNode);
                 break;
         }
+    }
+
+    protected override void OnInitialized()
+    {
+        TreeData.OnChange += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        TreeData.OnChange -= StateHasChanged;
     }
 }

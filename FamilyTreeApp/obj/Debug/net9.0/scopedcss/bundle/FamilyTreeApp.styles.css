@@ -273,6 +273,17 @@ main[b-sooym5xyd5] {
     color: #000;
 }
 
+.tree-label.spouse[b-5gjn933f37] {
+    border: 2px dotted #ccc;
+    padding: 5px 10px;
+    text-decoration: none;
+    color: #333;
+    display: inline-block;
+    border-radius: 4px;
+    background: #f9f9f9;
+    font-weight: bold;
+}
+
 .plus-button[b-5gjn933f37] {
     display: inline-flex;
     align-items: center;
@@ -327,6 +338,25 @@ main[b-sooym5xyd5] {
     border: 1px solid #ccc;
     border-radius: 4px;
     font-size: 1rem;
+}
+
+.person-pair[b-5gjn933f37] {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.person-pair[b-5gjn933f37] {
+    border-color: #aaa;
+}
+
+.spouse-connector[b-5gjn933f37] {
+    flex-grow: 1;
+    height: 2px;
+    max-width: 30px;
+    border-top: 2px dotted #aaa;
+    width: 30px;
 }
 /* _content/FamilyTreeApp/Components/Pages/Home.razor.rz.scp.css */
 main[b-pxn85y6mpk] {

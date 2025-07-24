@@ -1,44 +1,49 @@
 {
- "FullName": "İsmet ERTAŞ",
- "Title": "Grandfather",
- "IsRoot": true,
- "Children": [
-    {
-       "FullName": "Elif ERTAŞ",
-       "Title": "Daughter1",
-       "IsRoot": false,
-       "Children": [
+   "FullName": "İsmet ERTAŞ",
+   "Title": "Grandfather",
+   "Spouse": 
+      {
+          "FullName": "Aybüke ERTAŞ",
+          "Title": "Grandmother",
+          "Children": []
+      },
+   "Children": [
+      {
+         "FullName": "Elif ERTAŞ",
+         "Title": "Daughter1",
+         "Spouse": 
+              {
+                 "FullName": "Mustafa Aydın SİNOP",
+                 "Title": "Grandmother",
+                 "Children": []
+              },
+         "Children": [
             {
                "FullName": "Can SİNOP",
                "Title": "GSon1",
-               "IsRoot": false,
                "Children": []
             },
             {
                "FullName": "Esin SİNOP",
                "Title": "GDaughter1",
-               "IsRoot": false,
                "Children": []
             }
-       ]
-    },
-    {
-       "FullName": "Deniz ERTAŞ",
-       "Title": "Daughter2",
-       "IsRoot": false,
-       "Children": []
-    },
-    {
-       "FullName": "Yıldız ERTAŞ",
-       "Title": "Daughter3",
-       "IsRoot": false,
-       "Children": []
-    },
-    {
-       "FullName": "Nihan ERTAŞ",
-       "Title": "Daughter4",
-       "IsRoot": false,
-       "Children": []
-    }
- ]
+         ]
+      },
+      {
+         "FullName": "Deniz ERTAŞ",
+         "Title": "Daughter2",
+         "Children": []
+      },
+      {
+         "FullName": "Yıldız ERTAŞ",
+         "Title": "Daughter3",
+         "Children": []
+      },
+      {
+         "FullName": "Nihan ERTAŞ",
+         "Title": "Daughter4",
+         "Children": []
+      }
+   ]
 }

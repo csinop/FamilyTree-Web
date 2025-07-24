@@ -41,12 +41,10 @@
 }
 
 .tree-node:first-child::before {
-    /*content: none;*/
     border-top: none;
 }
 
 .tree-node:last-child::after {
-    /*content: none;*/
     border-top: none;
 }
 
@@ -67,6 +65,18 @@
     color: #000;
 }
 
+.tree-label.spouse {
+    border: 2px dotted #ccc;
+    padding: 5px 10px;
+    text-decoration: none;
+    color: #333;
+    display: inline-block;
+    border-radius: 4px;
+    background: #f9f9f9;
+    font-weight: bold;
+}
+
+/* Buttons */
 .plus-button {
     display: inline-flex;
     align-items: center;
@@ -91,6 +101,7 @@
     transform: scale(0.95);
 }
 
+/* PopUp */
 .new-node-popup-overlay {
     position: fixed;
     top: 0;
@@ -121,4 +132,34 @@
     border: 1px solid #ccc;
     border-radius: 4px;
     font-size: 1rem;
+}
+
+.new-node-popup input[type="dropdown"] {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 8px;
+    margin-bottom: 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+/* Spouse */
+.person-pair {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.person-pair {
+    border-color: #aaa;
+}
+
+.spouse-connector {
+    flex-grow: 1;
+    height: 2px;
+    max-width: 30px;
+    border-top: 2px dotted #aaa;
+    width: 30px;
 }

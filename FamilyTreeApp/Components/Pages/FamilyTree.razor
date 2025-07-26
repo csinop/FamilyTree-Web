@@ -45,7 +45,11 @@ else
         <div class="new-node-popup-overlay">
             <div class="new-node-popup">
                 <h3>Add a New Family Member</h3>
-
+                <select @bind="_selectedRelationship">
+                    <option value="Child">Child</option>
+                    <option value="Sibling">Sibling</option>
+                    <option value="Spouse">Spouse</option>
+                </select>
                 <label>Full Name:</label><br />
                 <input type="text" @bind="_newFullName" /><br />
 
@@ -113,7 +117,6 @@ else
             {         
                 if (node.Children == null) continue;
                 builder.AddContent(sequence++, InOrder(node.Children[i]));
-                if (i == childrenCount - 1) RenderAddButton(builder, ref sequence, node);
             }
 
             builder.CloseElement(); // </ul>
@@ -132,14 +135,14 @@ else
         builder.CloseElement(); // </li>
     };
 
-    private void RenderAddButton(RenderTreeBuilder builder, ref int sequence, FamilyTreeNode parentNode)
+    private void RenderAddButton(RenderTreeBuilder builder, ref int sequence, FamilyTreeNode selectedNode)
     {
         builder.OpenElement(sequence++, "li");
         builder.AddAttribute(sequence++, "class", "tree-node");
         builder.AddAttribute(sequence++, _markupContext, "");
 
         builder.OpenElement(sequence++, "button");
-        builder.AddAttribute(sequence++, "onclick", EventCallback.Factory.Create(this, () => ShowNewNodePopUp(parentNode)));
+        builder.AddAttribute(sequence++, "onclick", EventCallback.Factory.Create(this, () => ShowNewNodePopUp(selectedNode)));
         builder.AddAttribute(sequence++, "href", "#");
         builder.AddAttribute(sequence++, "class", "plus-button");
         builder.AddAttribute(sequence++, _markupContext, "");
@@ -151,10 +154,11 @@ else
 }
 
 @code {
+    private FamilyTreeNode.RelationshipType _selectedRelationship = FamilyTreeNode.RelationshipType.Child;
     private bool _canAddNode => 
         !string.IsNullOrWhiteSpace(_newFullName) && 
         !string.IsNullOrWhiteSpace(_newTitle) && 
-        _targetParentForAdd != null;
+        _selectedNodeForInsert != null;
 
     private bool _newNodePopUpVisible = false;
 
@@ -162,13 +166,13 @@ else
     private string? _newFullName;
     private string? _newTitle;
 
-    private FamilyTreeNode? _targetParentForAdd;
+    private FamilyTreeNode? _selectedNodeForInsert;
     private Stack<TreeAction> _undoActions = new();
     private Stack<TreeAction> _redoActions = new();
     
     private void ShowNewNodePopUp(FamilyTreeNode parentNode)
     {
-        _targetParentForAdd = parentNode;
+        _selectedNodeForInsert = parentNode;
         _newFullName = "";
         _newTitle = "";
         _newNodePopUpVisible = true;
@@ -176,7 +180,7 @@ else
 
     private void HideNewNodePopUp()
     {
-        _targetParentForAdd = null;
+        _selectedNodeForInsert = null;
         _newFullName = "";
         _newTitle = "";
         _newNodePopUpVisible = false;
@@ -184,9 +188,9 @@ else
 
     private void AddNode()
     {
-        if (!_canAddNode) return;
+        if (!_canAddNode || _selectedNodeForInsert == null) return;
 
-        if (_targetParentForAdd.Children == null) _targetParentForAdd.Children = new();
+        _selectedNodeForInsert.Children ??= new List<FamilyTreeNode>();
 
         FamilyTreeNode newNode = new FamilyTreeNode
         {
@@ -194,17 +198,57 @@ else
             Title = _newTitle
         };
 
-        // Determine Spouse / Children here
+        switch(_selectedRelationship)
+        {
+            case FamilyTreeNode.RelationshipType.Child:
+                _selectedNodeForInsert.Children ??= new List<FamilyTreeNode>();
+                _selectedNodeForInsert.Children.Add(newNode);
+                newNode.Parent = _selectedNodeForInsert;
 
-        _targetParentForAdd.Children.Add(newNode);
-        _undoActions.Push(new TreeAction
-            {
-                Type = TreeAction.ActionType.Add,
-                AffectedNode = newNode,
-                ParentNode = _targetParentForAdd,
-                OriginalIndex = _targetParentForAdd.Children.Count - 1
-            }
-        );
+                _undoActions.Push(new TreeAction
+                    {
+                        Type = TreeAction.ActionType.Add,
+                        AffectedNode = newNode,
+                        ParentNode = _selectedNodeForInsert,
+                        OriginalIndex = _selectedNodeForInsert.Children.Count - 1
+                    }
+                );
+                break;
+
+            case FamilyTreeNode.RelationshipType.Spouse:
+                _selectedNodeForInsert.Spouse = newNode;
+                newNode.Parent = _selectedNodeForInsert.Parent;
+
+                _undoActions.Push(new TreeAction
+                    {
+                        Type = TreeAction.ActionType.Add,
+                        AffectedNode = newNode,
+                        ParentNode = _selectedNodeForInsert,
+                        OriginalIndex = -1
+                    }
+                );
+                break;
+
+            case FamilyTreeNode.RelationshipType.Sibling:
+                FamilyTreeNode parent = _selectedNodeForInsert.Parent;
+
+                if (parent == null) break;
+
+                parent.Children ??= new List<FamilyTreeNode>();
+                parent.Children.Add(newNode);
+                newNode.Parent = parent;
+
+                _undoActions.Push(new TreeAction
+                    {
+                        Type = TreeAction.ActionType.Add,
+                        AffectedNode = newNode,
+                        ParentNode = parent,
+                        OriginalIndex = parent.Children.Count - 1
+                    }
+                );
+                break;
+
+        }
 
         _redoActions.Clear();
         HideNewNodePopUp();

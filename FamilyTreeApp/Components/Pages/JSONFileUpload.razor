@@ -19,44 +19,45 @@
             <div class="input-container" id="inputContainer">
                 <textarea @bind="_fileContent" style="font-family: monospace;">@_fileContent</textarea>
             </div><br>
-        }
-        <div class="horizontal-container">
-            <button class="toggle-btn" @onclick="HandleToggleButtonClick">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                    viewBox="0 0 24 24">
-                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-                    <circle cx="12" cy="12" r="3"/>
-                </svg>
-            </button>
-            @if(_showInput) 
-            {           
-                <button class="toggle-btn" @onclick="UpdateFamilyTree">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
-                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" 
+        
+            <div class="horizontal-container">
+                <button class="toggle-btn" @onclick="HandleToggleButtonClick">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                         viewBox="0 0 24 24">
-                        <path d="M17 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V7z"/>
-                        <polyline points="17 3 17 8 7 8"/>
-                        <rect x="7" y="13" width="6" height="5"/>
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                        <circle cx="12" cy="12" r="3"/>
                     </svg>
                 </button>
-            }
-            @if (!string.IsNullOrEmpty(_downloadUrl))
-            {
-                <a href="@_downloadUrl"
-                    download="FamilyTree_Modified.json"
-                    class="download-button">
-                    📥 Download
-                </a>
-            }
-        </div>
+                @if(_showInput) 
+                {           
+                    <button class="toggle-btn" @onclick="UpdateFamilyTree">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" 
+                            viewBox="0 0 24 24">
+                            <path d="M17 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V7z"/>
+                            <polyline points="17 3 17 8 7 8"/>
+                            <rect x="7" y="13" width="6" height="5"/>
+                        </svg>
+                    </button>
+                }
+                @if (!string.IsNullOrEmpty(_downloadUrl))
+                {
+                    <a href="@_downloadUrl"
+                        download="FamilyTree_Modified.json"
+                        class="download-button">
+                        📥 Download
+                    </a>
+                }
+            </div>
+        }
     </div>
 }
 
 @code {
     private string? _fileContent;
     private string? _downloadUrl;
-    private bool _showInput = true;
+    private bool _showInput = false;
     private int _maxAllowedFileSize = 10 * 1024 * 1024;
 
     private void HandleToggleButtonClick() 
@@ -83,6 +84,7 @@
 
             if (rootNode != null) 
             {
+                SetParentLinks(rootNode);
                 TreeData.SetRootNode(rootNode);
                 Console.WriteLine("Changes have been saved.");
                 return;
@@ -104,6 +106,24 @@
         byte[] bytes = Encoding.UTF8.GetBytes(_fileContent);
         string base64 = Convert.ToBase64String(bytes);
         _downloadUrl = $"data:application/json;base64,{base64}";
+    }
+
+    private void SetParentLinks(FamilyTreeNode node, FamilyTreeNode? parent = null)
+    {
+        node.Parent = parent;
+
+        if (node.Children != null)
+        {
+            foreach (var child in node.Children)
+            {
+                SetParentLinks(child, node);
+            }
+        }
+
+        if (node.Spouse != null)
+        {
+            node.Spouse.Parent = parent;
+        }
     }
 
     private async Task HandleFileSelected(InputFileChangeEventArgs e)
@@ -135,8 +155,8 @@
 
             if (rootNode != null) 
             {
+                SetParentLinks(rootNode);
                 TreeData.SetRootNode(rootNode);
-                Console.WriteLine("Read the json file.");
                 return;
             }
 

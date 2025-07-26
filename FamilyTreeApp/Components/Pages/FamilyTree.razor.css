@@ -144,6 +144,23 @@
     font-size: 1rem;
 }
 
+.new-node-popup select {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 12px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #fff;
+    box-sizing: border-box;
+    appearance: none;
+}
+
+.new-node-popup select:focus {
+    border-color: #666;
+    outline: none;
+}
+
 /* Spouse */
 .person-pair {
     display: flex;

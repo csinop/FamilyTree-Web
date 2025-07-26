@@ -41,12 +41,10 @@
 }
 
 .tree-node:first-child[b-5gjn933f37]::before {
-    /*content: none;*/
     border-top: none;
 }
 
 .tree-node:last-child[b-5gjn933f37]::after {
-    /*content: none;*/
     border-top: none;
 }
 
@@ -78,6 +76,7 @@
     font-weight: bold;
 }
 
+/* Buttons */
 .plus-button[b-5gjn933f37] {
     display: inline-flex;
     align-items: center;
@@ -102,6 +101,7 @@
     transform: scale(0.95);
 }
 
+/* PopUp */
 .new-node-popup-overlay[b-5gjn933f37] {
     position: fixed;
     top: 0;
@@ -134,6 +134,34 @@
     font-size: 1rem;
 }
 
+.new-node-popup input[type="dropdown"][b-5gjn933f37] {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 8px;
+    margin-bottom: 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+.new-node-popup select[b-5gjn933f37] {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 12px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #fff;
+    box-sizing: border-box;
+    appearance: none;
+}
+
+.new-node-popup select:focus[b-5gjn933f37] {
+    border-color: #666;
+    outline: none;
+}
+
+/* Spouse */
 .person-pair[b-5gjn933f37] {
     display: flex;
     align-items: center;

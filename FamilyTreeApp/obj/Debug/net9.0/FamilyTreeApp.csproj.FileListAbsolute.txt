@@ -157,5 +157,5 @@ C:\Users\can\Desktop\Projects\Web\FamilyTree-Web\FamilyTreeApp\obj\Debug\net9.0\
 C:\Users\can\Desktop\Projects\Web\FamilyTree-Web\FamilyTreeApp\obj\Debug\net9.0\scopedcss\Components\Pages\Home.razor.rz.scp.css
 C:\Users\can\Desktop\Projects\Web\FamilyTree-Web\FamilyTreeApp\obj\Debug\net9.0\scopedcss\Components\Pages\JSONFileUpload.razor.rz.scp.css
 C:\Users\can\Desktop\Projects\Web\FamilyTree-Web\FamilyTreeApp\obj\Debug\net9.0\compressed\si2x5dwrg1-atodjacza5.gz
-C:\Users\can\Desktop\Projects\Web\FamilyTree-Web\FamilyTreeApp\obj\Debug\net9.0\compressed\95s38xe9pw-bgl2wng948.gz
-C:\Users\can\Desktop\Projects\Web\FamilyTree-Web\FamilyTreeApp\obj\Debug\net9.0\compressed\kgr1u06pu2-bgl2wng948.gz
+C:\Users\can\Desktop\Projects\Web\FamilyTree-Web\FamilyTreeApp\obj\Debug\net9.0\compressed\95s38xe9pw-mez9cp6dto.gz
+C:\Users\can\Desktop\Projects\Web\FamilyTree-Web\FamilyTreeApp\obj\Debug\net9.0\compressed\kgr1u06pu2-mez9cp6dto.gz
